@@ -1,0 +1,42 @@
+server:
+  port: 5555
+  tomcat:
+    uri-encoding: UTF-8
+    
+spring:
+  application:
+    name: taotao-zuul-server
+    
+eureka:
+  healthcheck:
+      enabled: true
+  client:
+    service-url:
+      defaultZone: http://user:123456@192.168.1.116:8761/eureka,http://user:123456@192.168.1.116:8762/eureka,http://user:123456@192.168.1.116:8763/eureka
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+    hostname: ${spring.cloud.client.ipAddress}
+    
+zuul:
+  retryable: true
+  routes:
+    manager:
+      path: /manager/**
+      service-id: taotao-manager-web
+ribbon:
+  OkToRetryOnAllOperations: false
+  MaxAutoRetriesNextServer: 2
+  MaxAutoRetries: 1
+  ConnectTimeout: 3000
+  ReadTimeout: 3000
+        
+#超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+      

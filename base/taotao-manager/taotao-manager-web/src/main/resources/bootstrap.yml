@@ -1,0 +1,72 @@
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  application:
+    name: taotao-manager-web
+  datasource:
+    url: jdbc:mysql://192.168.1.114:3306/taotao?characterEncoding=utf-8&useSSL=false
+    username: user
+    password: jiushi123
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  cloud:
+    config:
+      enabled: true
+      label: master
+      discovery:
+        service-id: config-server
+  boot:
+    admin:
+      client:
+        enabled: true
+    
+mybatis:
+  mapper-locations:
+  - classpath:com/taotao/manager/mapper/*.xml
+  configuration:
+    call-setters-on-nulls: true
+    map-underscore-to-camel-case: true
+pagehelper:
+  helper-dialect: mysql
+  offset-as-page-num: true
+  row-bounds-with-count: true
+  support-methods-arguments: true
+  reasonable: true
+  params: count=countSql
+    
+eureka:
+  healthcheck:
+      enabled: true
+  client:
+    service-url:
+      defaultZone: http://user:123456@192.168.1.116:8761/eureka,http://user:123456@192.168.1.116:8762/eureka,http://user:123456@192.168.1.116:8763/eureka
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+    hostname: ${spring.cloud.client.ipAddress}
+    
+management:
+  security:
+    enabled: false
+    
+feign:
+  hystrix:
+    enabled: true
+    
+#超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000  
+    
